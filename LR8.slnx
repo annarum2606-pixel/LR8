@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LR8/LR8.csproj" />
+  <Project Path="LR8Test/LR8Test.csproj" />
+</Solution>
