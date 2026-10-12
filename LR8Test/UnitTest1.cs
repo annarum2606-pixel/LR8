@@ -23,8 +23,8 @@ namespace LR8Test
         private void ScreenshotScreen(string name) =>
             Capture.Screen().ToFile($"{name}.png");
 
-        private void ScreenshotWindow(Window w, string name) =>
-            Capture.Element(w).ToFile($"{name}.png");
+        private void ScreenshotWindow(Window window, string name) =>
+            Capture.Element(window).ToFile($"{name}.png");
 
         [Fact]
         public void Authorization_EmptyAll_ShowsLoginError()
