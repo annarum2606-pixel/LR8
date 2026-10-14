@@ -12,5 +12,6 @@
         <Label Content="Пароль"/>
         <TextBox x:Name="PasswordTextBox"/>
         <Button x:Name="AuthorizarionButton" Content="Авторизоваться" Click="AuthorizarionButton_Click"/>
+        <Label x:Name="ErrorLabel"/>
     </StackPanel>
 </Window>

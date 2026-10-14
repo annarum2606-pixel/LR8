@@ -1,6 +1,5 @@
 ﻿using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
-using FlaUI.Core.Capturing;
 using FlaUI.UIA3;
 using FluentAssertions;
 
@@ -20,11 +19,9 @@ namespace LR8Test
             _window = _app.GetMainWindow(_automation)!;
         }
 
-        private void ScreenshotScreen(string name) =>
-            Capture.Screen().ToFile($"{name}.png");
-
-        private void ScreenshotWindow(Window window, string name) =>
-            Capture.Element(window).ToFile($"{name}.png");
+        // Создание скриншота
+        private void ScreenshotScreen(Window window, string name) =>
+            window.Capture().Save($"{name}.png");
 
         [Fact]
         public void Authorization_EmptyAll_ShowsLoginError()
@@ -32,10 +29,12 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
-            ScreenshotScreen("Test1_EmptyAll");
+            var label = _window.FindFirstDescendant(cf => cf.ByAutomationId("ErrorLabel"))!.Name;
 
-            Assert.True(File.Exists("Test1_EmptyAll.png"));
+            Thread.Sleep(1000);
+            ScreenshotScreen(_window, "Test1_EmptyAll");
+
+            Assert.Equal("Заполните поле логин", label);
         }
 
         [Fact]
@@ -46,10 +45,12 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
-            ScreenshotScreen("Test2_OnlyLogin");
+            var label = _window.FindFirstDescendant(cf => cf.ByAutomationId("ErrorLabel"))!.Name;
 
-            Assert.True(File.Exists("Test2_OnlyLogin.png"));
+            Thread.Sleep(1000);
+            ScreenshotScreen(_window, "Test2_OnlyLogin");
+
+            Assert.Equal("Заполните поле пароль", label);
         }
 
         [Fact]
@@ -62,10 +63,12 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
-            ScreenshotScreen("Test3_UnknownLogin");
+            var label = _window.FindFirstDescendant(cf => cf.ByAutomationId("ErrorLabel"))!.Name;
 
-            Assert.True(File.Exists("Test3_UnknownLogin.png"));
+            Thread.Sleep(1000);
+            ScreenshotScreen(_window, "Test3_UnknownLogin");
+
+            Assert.Equal("Пользователь не найден", label);
         }
 
         [Fact]
@@ -78,10 +81,12 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
-            ScreenshotScreen("Test4_WrongPassword");
+            var label = _window.FindFirstDescendant(cf => cf.ByAutomationId("ErrorLabel"))!.Name;
 
-            Assert.True(File.Exists("Test4_WrongPassword.png"));
+            Thread.Sleep(1000);
+            ScreenshotScreen(_window, "Test4_WrongPassword");
+
+            Assert.Equal("Неверный пароль", label);
         }
 
         [Fact]
@@ -94,19 +99,18 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
+            Thread.Sleep(1000);
 
             var welcome = _app.GetAllTopLevelWindows(_automation)
                               .FirstOrDefault(w => w.Name == "WelcomeWindow");
-
             welcome.Should().NotBeNull();
 
             var label = welcome!
-                .FindFirstDescendant(cf => cf.ByAutomationId("WelcomeLabel"));
+                .FindFirstDescendant(cf => cf.ByAutomationId("WelcomeLabel"))!.Name;
 
-            label!.Name.Should().Contain("manager").And.Contain("менеджер");
+            Assert.Equal("Добро пожаловать, manager, ваша роль - менеджер.", label);
 
-            ScreenshotWindow(welcome, "Test5_SuccessManager");
+            ScreenshotScreen(welcome, "Test5_SuccessManager");
             welcome.Close();
         }
 
@@ -118,10 +122,12 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
-            ScreenshotScreen("Test6_OnlyPassword");
+            var label = _window.FindFirstDescendant(cf => cf.ByAutomationId("ErrorLabel"))!.Name;
 
-            Assert.True(File.Exists("Test6_OnlyPassword.png"));
+            Thread.Sleep(1000);
+            ScreenshotScreen(_window, "Test6_OnlyPassword");
+
+            Assert.Equal("Заполните поле логин", label);
         }
 
         [Fact]
@@ -134,7 +140,7 @@ namespace LR8Test
             _window.FindFirstDescendant(cf => cf.ByName("Авторизоваться"))!
                    .AsButton().Click();
 
-            Thread.Sleep(1500);
+            Thread.Sleep(1000);
 
             var welcome = _app.GetAllTopLevelWindows(_automation)
                               .FirstOrDefault(w => w.Name == "WelcomeWindow");
@@ -142,11 +148,11 @@ namespace LR8Test
             welcome.Should().NotBeNull();
 
             var label = welcome!
-                .FindFirstDescendant(cf => cf.ByAutomationId("WelcomeLabel"));
+                .FindFirstDescendant(cf => cf.ByAutomationId("WelcomeLabel"))!.Name;
 
-            label!.Name.Should().Contain("admin").And.Contain("админ");
+            Assert.Equal("Добро пожаловать, admin, ваша роль - администратор.", label);
 
-            ScreenshotWindow(welcome, "Test7_SuccessAdmin");
+            ScreenshotScreen(welcome, "Test7_SuccessAdmin");
             welcome.Close();
         }
 

@@ -19,35 +19,35 @@ namespace LR8
 
             var user = Users.users.FirstOrDefault(u => u.Login == login);
 
-            //Проверка на пустой логин. Тест 1
+            //Проверка на пустой логин. Тест 1, 6
             if (string.IsNullOrWhiteSpace(login))
             {
-                MessageBox.Show("Заполните поле логин");
+                ErrorLabel.Content = "Заполните поле логин";
                 return;
             }
 
-            //Проверка на пустой пароль. Тест 2
+            //Проверка на пустой пароль. Тест 1, 2
             if (string.IsNullOrWhiteSpace(login) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Заполните поле пароль");
+                ErrorLabel.Content = "Заполните поле пароль";
                 return;
             }
 
             //Проверка существования логина. Тест 3
             if (user == default)
             {
-                MessageBox.Show("Пользователь не найден");
+                ErrorLabel.Content = "Пользователь не найден";
                 return;
             }
 
             //Проверка верности пароля. Тест 4
             if (user.Password != password)
             {
-                MessageBox.Show("Неверный пароль");
+                ErrorLabel.Content = "Неверный пароль";
                 return;
             }
 
-            //Успешная авторизация. Тест 5 (передача логина и роли)
+            //Успешная авторизация. Тест 5, 7 (передача логина и роли)
             Users.CurrentUserLogin = login;
             Users.CurrentUserRole = user.Role;
 
